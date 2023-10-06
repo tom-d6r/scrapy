@@ -105,6 +105,37 @@ class Importer {
       throw new Error(error.message);
     }
   }
+
+  /**
+   * Update the terms of a post.
+   * @param {int} postId
+   * @param {string} taxonomy
+   * @param {int[]} terms
+   * @param {string} postType
+   * @returns An object with post data.
+   */
+  async updateTerms(postId, taxonomy, terms, postType = "posts") {
+    const endpoint = `${this.baseUrl}/${postType}/${postId}`;
+    try {
+      const res = await axios.post(
+        endpoint,
+        {
+          title: "Updating",
+          [taxonomy]: terms,
+        },
+        {
+          auth: {
+            username: this.username,
+            password: this.password,
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      throw new Error(error.message);
+    }
+  }
 }
 
 export default Importer;
