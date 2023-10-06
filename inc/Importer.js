@@ -31,7 +31,7 @@ class Importer {
    * @param {string} postType
    * @returns An object with post data.
    */
-  async getPost(id, postType = "posts") {
+  async getPostById(id, postType = "posts") {
     const endpoint = `${this.baseUrl}/${postType}/${id}`;
 
     try {
