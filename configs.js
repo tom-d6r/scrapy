@@ -1,5 +1,5 @@
 const scraperOptions = {
-  url: "http://localhost:10003/sample-page",
+  url: "https://www.etz.nl/Specialisme/Kindergeneeskunde/Adoptiepoli",
 };
 
 const importerOptions = {

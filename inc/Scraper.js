@@ -40,14 +40,32 @@ class Scraper {
    * @param {string} type
    * @returns The content in the specified type.
    */
-  async getContentFromSelector(selector, type) {
+  async getContentFromSelector(selector, type, nextUntil) {
     try {
       const $ = await this.getCheerioPage(this.url);
-      const content = $(selector);
+
+      let content;
+      if (nextUntil) {
+        content = $(selector).nextUntil(nextUntil);
+      } else {
+        content = $(selector);
+      }
 
       switch (type) {
         case "html":
-          return content.html().trim();
+          let html = "";
+
+          content.contents().each((index, element) => {
+            const htmlTag = element.parentNode.name;
+            let data = element.data;
+
+            if (data) {
+              data = data.trim();
+              html += `<${htmlTag}>${data}</${htmlTag}>`;
+            }
+          });
+
+          return html;
         default:
           return content.first().text().trim();
       }
