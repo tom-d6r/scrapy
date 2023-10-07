@@ -42,9 +42,9 @@ class Scraper {
    */
   async getContentFromSelector(selector, type, nextUntil) {
     try {
+      let content;
       const $ = await this.getCheerioPage(this.url);
 
-      let content;
       if (nextUntil) {
         content = $(selector).nextUntil(nextUntil);
       } else {
@@ -53,19 +53,23 @@ class Scraper {
 
       switch (type) {
         case "html":
-          let html = "";
+          // When we use nextUntil, we have to loop over all the elements we grab.
+          if (nextUntil) {
+            let html = "";
+            content.contents().each((index, element) => {
+              const htmlTag = element.parentNode.name;
+              let data = element.data;
 
-          content.contents().each((index, element) => {
-            const htmlTag = element.parentNode.name;
-            let data = element.data;
+              if (data) {
+                data = data.trim();
+                html += `<${htmlTag}>${data}</${htmlTag}>`;
+              }
+            });
+            return html;
+          }
 
-            if (data) {
-              data = data.trim();
-              html += `<${htmlTag}>${data}</${htmlTag}>`;
-            }
-          });
-
-          return html;
+          // Otherwise we just return the html from the selected node.
+          return content.html();
         default:
           return content.first().text().trim();
       }

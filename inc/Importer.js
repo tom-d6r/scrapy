@@ -76,6 +76,24 @@ class Importer {
   }
 
   /**
+   * Checks if a post exists by searching using the post title.
+   * @param {string} postTitle
+   * @param {string} postType
+   * @returns A boolean wether or not the post exists.
+   */
+  async checkIfPostExists(postTitle, postType = "posts") {
+    const endpoint = `${this.baseUrl}/${postType}/?search=${encodeURIComponent(
+      postTitle
+    )}`;
+    try {
+      const res = await axios.get(endpoint);
+      return res.data.length > 0;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
    * Update the value of an ACF field for a single post.
    * @param {int} postId
    * @param {string} field
